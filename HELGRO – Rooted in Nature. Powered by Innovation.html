@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HELGRO – Rooted in Nature. Powered by Innovation.</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;600;700&family=Noto+Sans+Tamil:wght@400;600;700&display=swap">
+<style>
+:root{color-scheme:light;--bg:#fbf5e6;--card:#fffdf8;--ink:#2b1a1d;--mut:#6a5a56;--g:#00534e;--gt:#fff;--soft:#e6f1ec;--line:#e4d6b8;--warn:#b25a00;--bad:#b3261e;--mar:#8d153a;--gold:#ffbe29;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#1a1114;--card:#251a1e;--ink:#f6ece4;--mut:#c2b0a8;--g:#3fb8a2;--gt:#0b1f1b;--soft:#1f2e2a;--line:#43303a;--warn:#ffb74d;--bad:#ff8a80;--mar:#6e1030}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#1a1114;--card:#251a1e;--ink:#f6ece4;--mut:#c2b0a8;--g:#3fb8a2;--gt:#0b1f1b;--soft:#1f2e2a;--line:#43303a;--warn:#ffb74d;--bad:#ff8a80;--mar:#6e1030}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.55 "Noto Sans Sinhala","Noto Sans Tamil",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+#hd{background-color:var(--mar);color:#fff;padding:12px 14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;background-image:linear-gradient(45deg,rgba(255,190,41,.16) 25%,transparent 25%,transparent 75%,rgba(255,190,41,.16) 75%),linear-gradient(45deg,rgba(255,190,41,.16) 25%,transparent 25%,transparent 75%,rgba(255,190,41,.16) 75%);background-size:24px 24px;background-position:0 0,12px 12px;border-bottom:4px solid var(--gold)}
+.brand{display:flex;gap:10px;align-items:center}.brand b{font-size:22px;display:block;line-height:1.15}.brand small{opacity:.92;font-size:14px;display:block}.logo{font-size:32px}
+.lang{display:flex;gap:6px}
+.lang button{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.45);padding:6px 12px;min-height:40px;font-size:15px;border-radius:20px}
+.lang button.on{background:var(--gold);color:#3a0a1a;border-color:var(--gold)}
+.strip{height:6px;background:linear-gradient(90deg,#00534e 0 33%,#eb7400 33% 66%,#ffbe29 66%)}
+main{max-width:720px;margin:0 auto;padding:14px 14px 110px}
+h1{font-size:26px;margin:8px 0 12px;line-height:1.3}h2{font-size:20px;margin:18px 0 8px}
+.card{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--gold);border-radius:16px;padding:14px;margin:12px 0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.grid .card{margin:0}.grid b{font-size:22px;display:block}
+.mut{color:var(--mut);font-size:16px}
+.between{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.row{display:flex;gap:8px}.row>*{flex:1}
+button{font:inherit;font-weight:600;border:0;border-radius:14px;padding:12px 16px;background:var(--g);color:var(--gt);min-height:52px;cursor:pointer}
+button.alt{background:var(--soft);color:var(--ink);border:1px solid var(--line)}
+button.red{background:transparent;color:var(--bad);border:1px solid var(--bad)}
+button.chip{min-height:40px;padding:4px 12px;font-size:16px;border-radius:20px;margin:0 6px 6px 0}
+.full{width:100%}
+input,select,textarea{font:inherit;width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);margin:4px 0 10px;min-height:48px}
+label{font-weight:600;font-size:16px;color:var(--mut)}
+.bar{height:10px;background:var(--soft);border-radius:9px;overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--g),var(--gold))}
+.step{display:block;width:100%;text-align:left;margin:4px 0;padding:10px 12px;min-height:46px;background:none;color:var(--ink);border:1px solid var(--line);font-weight:500}
+.step.done{background:var(--soft)}.step.now{border:2px solid var(--mar);font-weight:700}
+.cd{font-weight:700;color:var(--g);font-size:22px}.cd.due{color:var(--warn)}
+#out{white-space:pre-wrap}
+.msg{padding:10px 14px;border-radius:16px;margin:8px 0;max-width:92%;white-space:pre-wrap}
+.msg.u{background:var(--g);color:var(--gt);margin-left:auto}
+.msg.a{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--gold)}
+.log{border-top:1px solid var(--line);padding:8px 0;font-size:16px}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;gap:2px;background:var(--card);border-top:3px solid var(--gold);padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px))}
+nav button{flex:1;background:none;color:var(--mut);padding:4px 2px;font-size:12px;min-height:56px;border-radius:12px}
+nav button span{display:block;font-size:24px}
+nav button.on{color:var(--mar);background:var(--soft)}
+</style></head>
+<body>
+<div id="hd"></div><div class="strip"></div>
+<main id="app"></main>
+<nav id="nv"></nav>
+<script>
+const KEY='farmeasy.v1',LK='farmeasy.lang';
+let S={items:[],sales:[]},LI=0;
+try{const r=localStorage.getItem(KEY);if(r)S=JSON.parse(r);LI=+localStorage.getItem(LK)||0}catch(e){}
+if(![0,1,2].includes(LI))LI=0;
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+let view='home',sel=null,adding=false,health={};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,9);
+const today=()=>new Date().toISOString().slice(0,10);
+// [English, Sinhala, Tamil]
+const D={
+tag:['Rooted in Nature. Powered by Innovation.','Rooted in Nature. Powered by Innovation.','Rooted in Nature. Powered by Innovation.'],
+home:['Home','මුල් පිටුව','முகப்பு'],farm:['My farm','මගේ ගොවිපළ','என் பண்ணை'],health:['Health','සෞඛ්‍ය','ஆரோக்கியம்'],harvest:['Harvest','අස්වැන්න','அறுவடை'],sales:['Sales','විකුණුම්','விற்பனை'],
+hello:['Good day, farmer','ආයුබෝවන් ගොවි මහතා','வணக்கம், விவசாயியே'],
+next:['Next harvest','ඊළඟ අස්වැන්න','அடுத்த அறுவடை'],
+noTimerHome:['No harvest timer yet. Add a crop, then set a timer ⏰','තවම අස්වනු ටයිමරයක් නැහැ. බෝගයක් එක් කර ටයිමරයක් සකසන්න ⏰','இன்னும் அறுவடை நேரம் அமைக்கவில்லை. பயிரைச் சேர்த்து நேரத்தை அமைக்கவும் ⏰'],
+growing:['Growing now','දැන් වගා කරන','இப்போது வளர்வது'],earned:['Money earned','ලැබූ මුදල්','கிடைத்த பணம்'],spent:['Money spent','වියදම්','செலவு'],profit:['Profit','ලාභය','லாபம்'],
+add:['＋ Add crop or animal','＋ බෝගයක් හෝ සතෙක් එක් කරන්න','＋ பயிர் அல்லது விலங்கு சேர்க்க'],
+healthBtn:['🩺 Photo health check','🩺 ඡායාරූපයෙන් සෞඛ්‍ය පරීක්ෂාව','🩺 படம் மூலம் ஆரோக்கிய சோதனை'],
+recent:['Recent work','මෑත වැඩ','சமீபத்திய வேலைகள்'],
+nothing:['Nothing yet. Your diary will appear here.','තවම කිසිවක් නැහැ. ඔබේ දිනපොත මෙහි පෙනෙනු ඇත.','இன்னும் எதுவும் இல்லை. உங்கள் நாட்குறிப்பு இங்கே தெரியும்.'],
+wipe:['Clear all my data','මගේ සියලු දත්ත මකන්න','என் தரவுகளை அழிக்க'],
+newT:['New crop or animal','නව බෝගයක් හෝ සතෙක්','புதிய பயிர் அல்லது விலங்கு'],
+name:['Name','නම','பெயர்'],namePh:['Tomatoes, Cows, Rice field…','තක්කාලි, ගවයන්, වී ගොවිපළ…','தக்காளி, மாடுகள், நெல் வயல்…'],
+quick:['Quick pick','ඉක්මන් තේරීම','விரைவு தேர்வு'],type:['Type','වර්ගය','வகை'],
+crop:['🌱 Crop','🌱 බෝගය','🌱 பயிர்'],animal:['🐄 Animal','🐄 සත්වයා','🐄 விலங்கு'],
+season:['Season','කන්නය','பருவம்'],
+maha:['Maha (Oct–Mar)','මහ කන්නය (ඔක්–මාර්)','பெரும்போகம் (அக்–மார்)'],yala:['Yala (Apr–Sep)','යල කන්නය (අප්‍රේ–සැප්)','சிறுபோகம் (ஏப்–செப்)'],
+start:['Start date','ආරම්භක දිනය','தொடங்கிய தேதி'],htl:['Harvest or market time','අස්වනු හෝ වෙළඳපොල වේලාව','அறுவடை அல்லது சந்தை நேரம்'],opt:['optional','අත්‍යවශ්‍ය නොවේ','விருப்பம்'],
+save:['Save','සුරකින්න','சேமி'],cancel:['Cancel','අවලංගු','ரத்து'],
+emptyFarm:['Nothing here yet. Add your first crop or animal to start your farm diary.','තවම කිසිවක් නැහැ. ගොවිපළ දිනපොත ආරම්භ කිරීමට පළමු බෝගය හෝ සතා එක් කරන්න.','இன்னும் எதுவும் இல்லை. பண்ணை நாட்குறிப்பைத் தொடங்க முதல் பயிர் அல்லது விலங்கைச் சேர்க்கவும்.'],
+sold:['Sold ✅','විකුණා ඇත ✅','விற்றது ✅'],back:['← Back','← ආපසු','← பின்'],
+started:['Started','ආරම්භය','தொடக்கம்'],steps:['Steps','පියවර','படிகள்'],
+nextStep:['Done – next step ➜','අවසන් – ඊළඟ පියවර ➜','முடிந்தது – அடுத்த படி ➜'],
+timerT:['⏰ Harvest timer','⏰ අස්වනු ටයිමරය','⏰ அறுவடை நேரம்'],noTimerSet:['No timer set.','ටයිමරයක් සකසා නැත.','நேரம் அமைக்கப்படவில்லை.'],
+saveTimer:['Save timer','ටයිමරය සුරකින්න','நேரத்தை சேமி'],
+diaryT:['📝 Write in diary','📝 දිනපොතේ ලියන්න','📝 நாட்குறிப்பில் எழுது'],whatDid:['What did you do?','ඔබ කළේ කුමක්ද?','என்ன செய்தீர்கள்?'],
+note:['Note','සටහන','குறிப்பு'],cost:['Cost','වියදම','செலவு'],saveDiary:['Save to diary','දිනපොතට සුරකින්න','நாட்குறிப்பில் சேமி'],
+saleT:['💰 Record a sale','💰 විකුණුමක් සටහන් කරන්න','💰 விற்பனையைப் பதிவு செய்'],
+howMuch:['How much','කොපමණද','எவ்வளவு'],unit:['Unit','ඒකකය','அலகு'],price:['Price for each unit','ඒකකයක මිල','ஒரு அலகின் விலை'],buyer:['Buyer','ගැනුම්කරු','வாங்குபவர்'],
+saveSale:['Save sale','විකුණුම සුරකින්න','விற்பனையை சேமி'],diaryH:['Diary','දිනපොත','நாட்குறிப்பு'],noEntries:['No entries yet.','තවම සටහන් නැත.','இன்னும் பதிவுகள் இல்லை.'],
+del:['Delete this','මෙය මකන්න','இதை நீக்கு'],
+a_water:['Watering','ජලය දැමීම','நீர் பாய்ச்சுதல்'],a_fert:['Fertilizing','පොහොර යෙදීම','உரமிடுதல்'],a_spray:['Spraying','ඉසීම','தெளித்தல்'],a_weed:['Weeding','වල් නෙලීම','களை எடுத்தல்'],
+a_feed:['Feeding','ආහාර දීම','உணவளித்தல்'],a_vacc:['Vaccinating','එන්නත් කිරීම','தடுப்பூசி'],a_med:['Medicine','බෙහෙත්','மருந்து'],a_other:['Other','වෙනත්','மற்றவை'],
+a_start:['Started','ආරම්භය','தொடக்கம்'],a_step:['Step','පියවර','படி'],a_timer:['Timer','ටයිමරය','நேரம்'],a_sold:['Sold','විකුණා','விற்றது'],a_health:['Health check','සෞඛ්‍ය පරීක්ෂාව','ஆரோக்கிய சோதனை'],
+tOn:['Harvest timer set','අස්වනු ටයිමරය සකසන ලදී','அறுவடை நேரம் அமைக்கப்பட்டது'],tOff:['Timer removed','ටයිමරය ඉවත් කළා','நேரம் நீக்கப்பட்டது'],
+hTitle:['Health check 🩺','සෞඛ්‍ය පරීක්ෂාව 🩺','ஆரோக்கிய சோதனை 🩺'],
+hIntro:['Take a clear photo of the sick leaf, fruit or animal, and get simple advice.','රෝගී කොළය, පලතුර හෝ සතාගේ පැහැදිලි ඡායාරූපයක් ගෙන සරල උපදෙස් ලබාගන්න.','நோயுற்ற இலை, பழம் அல்லது விலங்கின் தெளிவான படத்தை எடுத்து எளிய ஆலோசனை பெறுங்கள்.'],
+whatIs:['What is it?','මේ කුමක්ද?','இது என்ன?'],plant:['Plant or crop','ශාකය හෝ බෝගය','செடி அல்லது பயிர்'],animalO:['Animal','සත්වයා','விலங்கு'],
+photo:['Photo','ඡායාරූපය','படம்'],see:['What do you see?','ඔබ දකින්නේ කුමක්ද?','என்ன பார்க்கிறீர்கள்?'],seePh:['Yellow spots for 3 days…','දින 3ක් තිස්සේ කහ පැල්ලම්…','3 நாட்களாக மஞ்சள் புள்ளிகள்…'],
+getAdvice:['Get advice','උපදෙස් ගන්න','ஆலோசனை பெறு'],saveTo:['Save advice to','උපදෙස් සුරකින්න:','ஆலோசனையை சேமிக்க:'],choose:['Choose…','තෝරන්න…','தேர்வு செய்…'],
+disc:['This is guidance only. For serious or fast-spreading problems, call a vet or your local agriculture officer.','මෙය මඟපෙන්වීමක් පමණි. බරපතල හෝ වේගයෙන් පැතිරෙන ගැටලු සඳහා පශු වෛද්‍යවරයෙකුට හෝ ප්‍රදේශයේ කෘෂිකර්ම නිලධාරියාට කතා කරන්න.','இது வழிகாட்டுதல் மட்டுமே. தீவிரமான அல்லது வேகமாகப் பரவும் பிரச்சினைகளுக்கு கால்நடை மருத்துவர் அல்லது உங்கள் பகுதி விவசாய அலுவலரை அணுகவும்.'],
+looking:['Looking at your photo…','ඡායාරූපය බලමින්…','படத்தைப் பார்க்கிறேன்…'],
+na:['Photo advice is not available here right now.','ඡායාරූප උපදෙස් දැන් මෙහි ලබාගත නොහැක.','படம் மூலம் ஆலோசனை இப்போது கிடைக்கவில்லை.'],
+denied:['Permission was not given, so I can’t look at the photo.','අවසරය ලබා නොදුන් නිසා ඡායාරූපය බැලිය නොහැක.','அனுமதி கிடைக்காததால் படத்தைப் பார்க்க இயலாது.'],
+rate:['Too many requests. Please wait a minute and try again.','ඉල්ලීම් වැඩියි. විනාඩියක් රැඳී නැවත උත්සාහ කරන්න.','அதிக கோரிக்கைகள். ஒரு நிமிடம் காத்திருந்து மீண்டும் முயலவும்.'],
+err:['Sorry, I couldn’t read that photo. Please try again.','සමාවන්න, ඡායාරූපය කියවිය නොහැකි විය. නැවත උත්සාහ කරන්න.','மன்னிக்கவும், படத்தைப் படிக்க முடியவில்லை. மீண்டும் முயலவும்.'],
+needPhoto:['Please choose a photo first.','කරුණාකර මුලින් ඡායාරූපයක් තෝරන්න.','முதலில் ஒரு படத்தைத் தேர்ந்தெடுக்கவும்.'],
+needItem:['Please choose which crop or animal this is for.','මෙය කුමන බෝගයටද සතාටද යන්න තෝරන්න.','இது எந்தப் பயிர் அல்லது விலங்குக்கு என்பதைத் தேர்ந்தெடுக்கவும்.'],
+saved:['Saved to the diary.','දිනපොතට සුරකිණි.','நாட்குறிப்பில் சேமிக்கப்பட்டது.'],
+hvT:['Harvest timers ⏰','අස්වනු ටයිමර ⏰','அறுவடை நேரங்கள் ⏰'],noT:['No timers yet.','තවම ටයිමර් නැත.','இன்னும் நேரங்கள் இல்லை.'],
+noTy:['No timer yet','තවම ටයිමරයක් නැත','இன்னும் நேரம் இல்லை'],tapSet:['tap to set a timer','ටයිමරයක් සැකසීමට ස්පර්ශ කරන්න','நேரம் அமைக்கத் தொடவும்'],
+ready:['Ready now! 🎉','දැන් සූදානම්! 🎉','இப்போது தயார்! 🎉'],u:['d h m s','දින පැය මි. ත.','நாள் மணி நிமி வி'],
+salesT:['Sales 💰','විකුණුම් 💰','விற்பனை 💰'],
+noS:['No sales yet. Open a crop or animal and use “Record a sale”.','තවම විකුණුම් නැත. බෝගයක් හෝ සතෙකු විවෘත කර “විකුණුමක් සටහන් කරන්න” භාවිත කරන්න.','இன்னும் விற்பனை இல்லை. பயிர் அல்லது விலங்கைத் திறந்து “விற்பனையைப் பதிவு செய்” பயன்படுத்தவும்.'],
+needName:['Please type a name, like “Tomatoes” or “Cows”.','කරුණාකර නමක් ටයිප් කරන්න, උදා: “තක්කාලි” හෝ “ගවයන්”.','ஒரு பெயரை உள்ளிடவும், எ.கா. “தக்காளி” அல்லது “மாடுகள்”.'],
+needSale:['Please enter how much you sold and the price.','විකුණූ ප්‍රමාණය සහ මිල ඇතුළත් කරන්න.','விற்ற அளவையும் விலையையும் உள்ளிடவும்.'],
+cDel:['Delete this and its diary? Sales records stay.','මෙය සහ එහි දිනපොත මකන්නද? විකුණුම් වාර්තා රැඳේ.','இதையும் இதன் நாட்குறிப்பையும் நீக்கவா? விற்பனை பதிவுகள் இருக்கும்.'],
+cWipe:['Delete everything on this device?','මෙම උපාංගයේ සියල්ල මකන්නද?','இந்த சாதனத்தில் உள்ள அனைத்தையும் நீக்கவா?']};
+Object.assign(D,{
+ask:['Ask','අහන්න','கேள்'],
+askT:['Ask HELGRO AI 🤖','HELGRO AI ගෙන් අහන්න 🤖','HELGRO AI-யிடம் கேளுங்கள் 🤖'],
+askIntro:['Ask any farming question. I know about the crops and animals you added. For a photo, use the Health tab.','ඕනෑම ගොවිතැන් ප්‍රශ්නයක් අහන්න. ඔබ එක් කළ බෝග සහ සතුන් ගැන මම දනිමි. ඡායාරූපයක් සඳහා සෞඛ්‍ය පිටුව භාවිත කරන්න.','விவசாயம் பற்றிய எந்தக் கேள்வியையும் கேளுங்கள். நீங்கள் சேர்த்த பயிர்கள், விலங்குகள் பற்றி எனக்குத் தெரியும். படத்திற்கு ஆரோக்கியப் பக்கத்தைப் பயன்படுத்துங்கள்.'],
+askPh:['Type your question…','ඔබේ ප්‍රශ්නය ටයිප් කරන්න…','உங்கள் கேள்வியை எழுதுங்கள்…'],
+send:['Send','යවන්න','அனுப்பு'],
+thinking:['Thinking…','සිතමින්…','யோசிக்கிறேன்…'],
+newChat:['New chat','නව සංවාදය','புதிய உரையாடல்'],
+q1:['When should I put fertilizer on my crops?','මගේ බෝගවලට පොහොර යෙදිය යුත්තේ කවදාද?','என் பயிர்களுக்கு எப்போது உரம் இட வேண்டும்?'],
+q2:['My cow is not eating. What should I do?','මගේ ගවයා කන්නේ නැහැ. මම මොනවා කරන්නද?','என் மாடு சாப்பிடவில்லை. நான் என்ன செய்வது?'],
+q3:['How can I keep my harvest fresh longer?','මගේ අස්වැන්න වැඩි කාලයක් නැවුම්ව තබාගන්නේ කෙසේද?','என் அறுவடையை நீண்ட நாட்கள் புதிதாக வைப்பது எப்படி?'],
+askErr:['Sorry, I couldn’t answer right now. Please try again.','සමාවන්න, දැන් පිළිතුරු දිය නොහැක. නැවත උත්සාහ කරන්න.','மன்னிக்கவும், இப்போது பதிலளிக்க இயலவில்லை. மீண்டும் முயலவும்.']});
+const L=k=>(D[k]||[k,k,k])[LI];
+const ST={
+ crop:[['Plan','Prepare the land','Sow or plant','Grow and care','Harvest','Store','Sell'],
+  ['සැලසුම් කරන්න','ඉඩම සකසන්න','වපුරන්න / සිටුවන්න','වගා කර රැකබලා ගන්න','අස්වනු නෙළන්න','ගබඩා කරන්න','විකුණන්න'],
+  ['திட்டமிடு','நிலத்தைத் தயார் செய்','விதை / நடு','வளர்த்துப் பராமரி','அறுவடை செய்','சேமி','விற்கவும்']],
+ animal:[['Get the animals','Feed and care','Vaccinate and treat','Ready for market','Sell'],
+  ['සතුන් ලබාගන්න','ආහාර දී රැකබලා ගන්න','එන්නත් කර ප්‍රතිකාර කරන්න','වෙළඳපොලට සූදානම්','විකුණන්න'],
+  ['விலங்குகளைப் பெறு','உணவளித்துப் பராமரி','தடுப்பூசி போட்டுச் சிகிச்சை அளி','சந்தைக்குத் தயார்','விற்கவும்']]};
+const CH=[['crop','Paddy','වී','நெல்'],['crop','Tea','තේ','தேயிலை'],['crop','Coconut','පොල්','தென்னை'],['crop','Vegetables','එළවළු','காய்கறிகள்'],['crop','Rubber','රබර්','ரப்பர்'],['crop','Cinnamon','කුරුඳු','இலவங்கப்பட்டை'],
+ ['animal','Cows','ගවයන්','மாடுகள்'],['animal','Goats','එළුවන්','ஆடுகள்'],['animal','Chickens','කුකුළන්','கோழிகள்']];
+const ACTK=['water','fert','spray','weed','feed','vacc','med','other'];
+const LOC=()=>['en-LK','si-LK','ta-LK'][LI];
+const ic=i=>i.type==='crop'?'🌱':'🐄';
+const find=id=>S.items.find(x=>x.id===id);
+const num=n=>(Math.round(n*100)/100).toLocaleString('en-LK');
+const rs=n=>'Rs '+num(n);
+const costOf=i=>i.log.reduce((a,l)=>a+(+l.cost||0),0);
+const fmtD=d=>new Date(d).toLocaleDateString(LOC(),{day:'numeric',month:'short'});
+const prog=i=>Math.round(i.stage/(ST[i.type][0].length-1)*100);
+const stg=(i,k)=>ST[i.type][LI][k];
+const seasonS=i=>i.season?' · '+L(i.season).split(' (')[0]:'';
+const logHead=l=>D['a_'+l.t]?L('a_'+l.t):l.t;
+const logNote=(l,i)=>l.t==='step'&&ST[i.type][0][l.note]!=null?stg(i,l.note):l.t==='timer'&&(l.note==='on'||l.note==='off')?L(l.note==='on'?'tOn':'tOff'):l.note;
+function cd(iso){const ms=new Date(iso)-Date.now();if(ms<=0)return L('ready');
+ const u=L('u').split(' '),d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4),s=Math.floor(ms%6e4/1e3);
+ return (d?d+u[0]+' ':'')+h+u[1]+' '+m+u[2]+(d?'':' '+s+u[3])}
+const cdEl=iso=>`<div class="cd ${new Date(iso)<=Date.now()?'due':''}" data-t="${iso}">${cd(iso)}</div>`;
+
+function vHome(){
+ const act=S.items.filter(i=>!i.sold);
+ const cost=S.items.reduce((a,i)=>a+costOf(i),0),inc=S.sales.reduce((a,s)=>a+s.total,0);
+ const nx=act.filter(i=>i.harvest).sort((a,b)=>new Date(a.harvest)-new Date(b.harvest))[0];
+ const rec=S.items.flatMap(i=>i.log.map(l=>({...l,n:i.name,it:i}))).sort((a,b)=>b.d-a.d).slice(0,5);
+ return `<h1>${L('hello')} 🌾</h1>
+ ${nx?`<div class="card" onclick="openItem('${nx.id}')"><div class="mut">${L('next')}</div><h2 style="margin-top:2px">${ic(nx)} ${esc(nx.name)}</h2>${cdEl(nx.harvest)}</div>`:`<div class="card">${L('noTimerHome')}</div>`}
+ <div class="grid">
+ <div class="card"><span class="mut">${L('growing')}</span><b>${act.length}</b></div>
+ <div class="card"><span class="mut">${L('earned')}</span><b>${rs(inc)}</b></div>
+ <div class="card"><span class="mut">${L('spent')}</span><b>${rs(cost)}</b></div>
+ <div class="card"><span class="mut">${L('profit')}</span><b style="color:${inc-cost<0?'var(--bad)':'var(--g)'}">${rs(inc-cost)}</b></div></div>
+ <button class="full" onclick="go('farm',true)">${L('add')}</button>
+ <button class="full alt" style="margin-top:10px" onclick="go('health')">${L('healthBtn')}</button>
+ <h2>${L('recent')}</h2>
+ ${rec.map(l=>`<div class="log"><b>${esc(logHead(l))}</b> · ${esc(l.n)} <span class="mut">${fmtD(l.d)}</span><br>${esc(logNote(l,l.it))}</div>`).join('')||`<p class="mut">${L('nothing')}</p>`}
+ <p style="margin-top:30px"><button class="red" onclick="wipe()">${L('wipe')}</button></p>`}
+
+function addForm(){return `<div class="card"><h2 style="margin-top:0">${L('newT')}</h2>
+ <label>${L('quick')}</label><div style="margin:6px 0 10px">${CH.map((c,k)=>`<button class="chip alt" onclick="pick(${k})">${c[LI+1]}</button>`).join('')}</div>
+ <label>${L('name')}</label><input id="n" placeholder="${L('namePh')}">
+ <label>${L('type')}</label><select id="t"><option value="crop">${L('crop')}</option><option value="animal">${L('animal')}</option></select>
+ <label>${L('season')}</label><select id="se"><option value="">—</option><option value="maha">${L('maha')}</option><option value="yala">${L('yala')}</option></select>
+ <label>${L('start')}</label><input id="s" type="date" value="${today()}">
+ <label>${L('htl')} (${L('opt')})</label><input id="h" type="datetime-local">
+ <div class="row"><button onclick="addItem()">${L('save')}</button><button class="alt" onclick="adding=false;render()">${L('cancel')}</button></div></div>`}
+
+function vFarm(){
+ if(sel){const i=find(sel);if(i)return detail(i);sel=null}
+ return `<h1>${L('farm')}</h1>${adding?addForm():`<button class="full" onclick="adding=true;render()">${L('add')}</button>`}
+ ${S.items.map(i=>`<div class="card" onclick="openItem('${i.id}')"><div class="between"><b>${ic(i)} ${esc(i.name)}<span class="mut">${seasonS(i)}</span></b><span class="mut">${i.sold?L('sold'):stg(i,i.stage)}</span></div><div class="bar"><i style="width:${prog(i)}%"></i></div></div>`).join('')
+ ||(adding?'':`<p class="mut">${L('emptyFarm')}</p>`)}`}
+
+function detail(i){
+ const id=i.id,n=ST[i.type][0].length,last=i.stage>=n-1;
+ const inc=S.sales.filter(s=>s.itemId===id).reduce((a,s)=>a+s.total,0);
+ return `<button class="alt" onclick="sel=null;render()">${L('back')}</button>
+ <h1>${ic(i)} ${esc(i.name)}</h1><p class="mut">${L('started')} ${fmtD(i.start)}${seasonS(i)} · ${L('spent')}: ${rs(costOf(i))} · ${L('earned')}: ${rs(inc)}</p>
+ <div class="card"><h2 style="margin-top:0">${L('steps')}</h2>
+ ${ST[i.type][LI].map((s,k)=>`<button class="step ${k<i.stage?'done':''} ${k===i.stage?'now':''}" onclick="setStage('${id}',${k})">${k<i.stage?'✅':k===i.stage?'👉':'⬜'} ${s}</button>`).join('')}
+ ${last?'':`<button class="full" style="margin-top:8px" onclick="setStage('${id}',${i.stage+1})">${L('nextStep')}</button>`}</div>
+ <div class="card"><h2 style="margin-top:0">${L('timerT')}</h2>
+ ${i.harvest?cdEl(i.harvest):`<p class="mut">${L('noTimerSet')}</p>`}
+ <label>${L('htl')}</label><input id="hv" type="datetime-local" value="${esc(i.harvest)}">
+ <button class="full" onclick="setHarvest('${id}')">${L('saveTimer')}</button></div>
+ <div class="card"><h2 style="margin-top:0">${L('diaryT')}</h2>
+ <label>${L('whatDid')}</label><select id="at">${ACTK.map(a=>`<option value="${a}">${L('a_'+a)}</option>`).join('')}</select>
+ <label>${L('note')} (${L('opt')})</label><input id="an">
+ <label>${L('cost')} (Rs, ${L('opt')})</label><input id="ac" type="number" inputmode="decimal" placeholder="0">
+ <button class="full" onclick="logWork('${id}')">${L('saveDiary')}</button></div>
+ <div class="card"><h2 style="margin-top:0">${L('saleT')}</h2>
+ <div class="row"><div><label>${L('howMuch')}</label><input id="sq" type="number" inputmode="decimal"></div><div><label>${L('unit')}</label><input id="su" value="kg"></div></div>
+ <label>${L('price')} (Rs)</label><input id="sp" type="number" inputmode="decimal">
+ <label>${L('buyer')} (${L('opt')})</label><input id="sb">
+ <button class="full" onclick="sell('${id}')">${L('saveSale')}</button></div>
+ <h2>${L('diaryH')}</h2>${i.log.slice().reverse().map(l=>`<div class="log"><b>${esc(logHead(l))}</b> <span class="mut">${fmtD(l.d)}${l.cost?' · '+rs(l.cost):''}</span><br>${esc(logNote(l,i))}</div>`).join('')||`<p class="mut">${L('noEntries')}</p>`}
+ <p style="margin-top:24px"><button class="red" onclick="delItem('${id}')">${L('del')}</button></p>`}
+
+function vHealth(){return `<h1>${L('hTitle')}</h1><p class="mut">${L('hIntro')}</p>
+ <div class="card"><label>${L('whatIs')}</label><select id="hk"><option value="plant">${L('plant')}</option><option value="animal">${L('animalO')}</option></select>
+ <label>${L('photo')}</label><input id="ph" type="file" accept="image/*" onchange="prev(this)">
+ <img id="pv" alt="" style="display:none;max-width:100%;border-radius:12px;margin-bottom:10px">
+ <label>${L('see')} (${L('opt')})</label><textarea id="hn" rows="2" placeholder="${L('seePh')}"></textarea>
+ <button class="full" onclick="diagnose()">${L('getAdvice')}</button></div>
+ <div class="card" id="outc" style="display:${health.last?'block':'none'}"><div id="out">${fmtT(health.last||'')}</div>
+ <hr style="border:0;border-top:1px solid var(--line);margin:12px 0">
+ <label>${L('saveTo')}</label><select id="hi"><option value="">${L('choose')}</option>${S.items.map(i=>`<option value="${i.id}">${esc(i.name)}</option>`).join('')}</select>
+ <button class="alt full" onclick="saveAdvice()">${L('saveDiary')}</button></div>
+ <p class="mut">${L('disc')}</p>`}
+
+function vHarvest(){
+ const w=S.items.filter(i=>i.harvest&&!i.sold).sort((a,b)=>new Date(a.harvest)-new Date(b.harvest));
+ const no=S.items.filter(i=>!i.harvest&&!i.sold);
+ return `<h1>${L('hvT')}</h1>
+ ${w.map(i=>`<div class="card" onclick="openItem('${i.id}')"><b>${ic(i)} ${esc(i.name)}</b><div class="mut">${new Date(i.harvest).toLocaleString(LOC(),{dateStyle:'medium',timeStyle:'short'})}</div>${cdEl(i.harvest)}</div>`).join('')||`<p class="mut">${L('noT')}</p>`}
+ ${no.length?`<h2>${L('noTy')}</h2>`+no.map(i=>`<div class="card" onclick="openItem('${i.id}')"><b>${ic(i)} ${esc(i.name)}</b> <span class="mut">· ${L('tapSet')}</span></div>`).join(''):''}`}
+
+function vSales(){
+ const inc=S.sales.reduce((a,s)=>a+s.total,0),cost=S.items.reduce((a,i)=>a+costOf(i),0);
+ return `<h1>${L('salesT')}</h1><div class="grid">
+ <div class="card"><span class="mut">${L('earned')}</span><b>${rs(inc)}</b></div>
+ <div class="card"><span class="mut">${L('spent')}</span><b>${rs(cost)}</b></div></div>
+ ${S.sales.slice().reverse().map(s=>`<div class="card"><div class="between"><b>${esc(s.name)}</b><b>${rs(s.total)}</b></div><div class="mut">${num(s.qty)} ${esc(s.unit)} × ${num(s.price)}${s.buyer?' · '+esc(s.buyer):''} · ${fmtD(s.d)}</div></div>`).join('')||`<p class="mut">${L('noS')}</p>`}`}
+
+let chat=[],busy=false;
+const msgHtml=()=>chat.map(m=>`<div class='msg ${m.r}'>${m.r==='a'?fmtT(m.t||L('thinking')):esc(m.t)}</div>`).join('');
+function draw(){const c=$('#chat');if(!c)return;c.innerHTML=msgHtml();if(c.lastElementChild)c.lastElementChild.scrollIntoView({block:'nearest'})}
+function vAsk(){return `<h1>${L('askT')}</h1><p class='mut'>${L('askIntro')}</p>
+ <div id='chat'>${msgHtml()}</div>
+ ${chat.length?'':[1,2,3].map(n=>`<button class='chip alt' style='display:block;width:100%;text-align:left;margin:0 0 8px;border-radius:14px;padding:10px 14px;min-height:48px' onclick='askQ(${n})'>${L('q'+n)}</button>`).join('')}
+ <textarea id='q' rows='2' placeholder='${L('askPh')}' onkeydown='keyAsk(event)'></textarea>
+ <div class='row'><button onclick='ask()'>${L('send')}</button>${chat.length?`<button class='alt' onclick='chat=[];render(true)'>${L('newChat')}</button>`:''}</div>
+ <p class='mut'>${L('disc')}</p>`}
+function askQ(n){ask(L('q'+n))}
+function keyAsk(e){if(e.key==='Enter'&&!e.shiftKey&&!/Android|iPhone|iPad/i.test(navigator.userAgent)){e.preventDefault();ask()}}
+async function ask(text){
+ if(busy)return;
+ const inp=$('#q'),q=String(text||(inp?inp.value:'')).trim();
+ if(!q)return;
+ busy=true;chat.push({r:'u',t:q},{r:'a',t:''});render(true);draw();
+ const m=chat[chat.length-1];
+ try{
+  const sample=window.claude&&await claude.use('sample');
+  if(!sample){m.t=L('na');return}
+  const lang=['English','Sinhala (සිංහල)','Tamil (தமிழ்)'][LI];
+  const ctx=S.items.filter(i=>!i.sold).map(i=>'- '+i.name+' ('+i.type+(i.season?', '+i.season+' season':'')+'), step: '+ST[i.type][0][i.stage]+(i.harvest?', harvest/market time: '+i.harvest:'')+'; recent diary: '+(i.log.slice(-3).map(l=>logHead(l)+(l.note?' - '+String(logNote(l,i)).slice(0,80):'')).join('; ')||'none')).join('\n')||'(no crops or animals added yet)';
+  const hist=chat.slice(-8,-2).map(x=>(x.r==='u'?'Farmer: ':'Assistant: ')+x.t).join('\n');
+  const p=`You are HELGRO’s friendly farm assistant for small-scale farmers in Sri Lanka. Reply entirely in ${lang}, in very simple words and short sentences (about 150 words at most). Give practical, low-cost advice for Sri Lankan conditions (Maha and Yala seasons, local crops, locally available inputs). For animal illness, pests or chemicals, say to follow the label and to ask a Veterinary Surgeon or the local agriculture instructor (Krushi Upadeshaka) if it is serious. If you are not sure, say so. Do not invent prices or government schemes.
+The farmer’s farm right now:
+${ctx}
+Conversation so far:
+${hist||'(none)'}
+Farmer: ${q}
+Assistant:`;
+  const r=await sample(p,{cache:false,onText:({text})=>{m.t=text;draw()}});
+  m.t=r.text;
+ }catch(e){const c=e&&e.code;m.t=c==='not_granted'?L('denied'):c==='rate_limited'?L('rate'):L('askErr')}
+ finally{busy=false;draw()}
+}
+const VIEWS={home:vHome,farm:vFarm,health:vHealth,ask:vAsk,harvest:vHarvest,sales:vSales};
+const NAV=[['home','🏠'],['farm','🌱'],['health','🩺'],['ask','🤖'],['harvest','⏰'],['sales','💰']];
+function render(keep){
+ $('#hd').innerHTML=`<div class="brand"><span class="logo">🌾</span><div><b>HELGRO</b><small>${L('tag')}</small></div></div>
+ <div class="lang">${['English','සිංහල','தமிழ்'].map((n,k)=>`<button class="${k===LI?'on':''}" onclick="setLang(${k})">${n}</button>`).join('')}</div>`;
+ $('#nv').innerHTML=NAV.map(([v,e])=>`<button class="${v===view?'on':''}" onclick="go('${v}')"><span>${e}</span>${L(v)}</button>`).join('');
+ $('#app').innerHTML=VIEWS[view]();
+ if(!keep)window.scrollTo(0,0)}
+function setLang(k){LI=k;try{localStorage.setItem(LK,k)}catch(e){}document.documentElement.lang=['en','si','ta'][k];render(true)}
+function go(v,add){view=v;sel=null;adding=!!add;render()}
+function openItem(id){view='farm';sel=id;render()}
+function pick(k){$('#n').value=CH[k][LI+1];$('#t').value=CH[k][0]}
+function addItem(){
+ const n=$('#n').value.trim();
+ if(!n){alert(L('needName'));return}
+ const it={id:uid(),name:n,type:$('#t').value,season:$('#se').value,stage:0,start:$('#s').value||today(),harvest:$('#h').value,log:[],sold:false};
+ it.log.push({d:Date.now(),t:'start',note:n,cost:0});
+ S.items.push(it);save();adding=false;sel=it.id;render()}
+function setStage(id,k){
+ const i=find(id);if(i.stage===k)return;i.stage=k;
+ i.log.push({d:Date.now(),t:'step',note:k,cost:0});save();render()}
+function setHarvest(id){
+ const i=find(id);i.harvest=$('#hv').value;
+ i.log.push({d:Date.now(),t:'timer',note:i.harvest?'on':'off',cost:0});save();render()}
+function logWork(id){
+ const i=find(id);
+ i.log.push({d:Date.now(),t:$('#at').value,note:$('#an').value.trim(),cost:+$('#ac').value||0});save();render()}
+function sell(id){
+ const i=find(id),q=+$('#sq').value,pv=$('#sp').value,p=+pv;
+ if(!(q>0)||pv===''||p<0){alert(L('needSale'));return}
+ const u=$('#su').value.trim()||'kg';
+ S.sales.push({id:uid(),itemId:id,name:i.name,qty:q,unit:u,price:p,total:q*p,buyer:$('#sb').value.trim(),d:Date.now()});
+ i.sold=true;i.stage=ST[i.type][0].length-1;i.harvest='';
+ i.log.push({d:Date.now(),t:'sold',note:q+' '+u+' × Rs '+p,cost:0});save();render()}
+function delItem(id){
+ if(!confirm(L('cDel')))return;
+ S.items=S.items.filter(x=>x.id!==id);save();sel=null;render()}
+function wipe(){
+ if(!confirm(L('cWipe')))return;
+ S={items:[],sales:[]};save();render()}
+
+const fmtT=t=>esc(t).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/^#+\s*/gm,'');
+function prev(el){
+ const f=el.files[0],p=$('#pv');if(!f){p.style.display='none';return}
+ p.src=URL.createObjectURL(f);p.style.display='block'}
+async function shrink(file){
+ const url=URL.createObjectURL(file);
+ const img=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=url});
+ const k=Math.min(1,1024/Math.max(img.width,img.height));
+ const c=document.createElement('canvas');c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);
+ c.getContext('2d').drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(url);
+ return new Promise(r=>c.toBlob(r,'image/jpeg',.85))}
+async function diagnose(){
+ const f=$('#ph').files[0];
+ if(!f){alert(L('needPhoto'));return}
+ const box=$('#outc'),out=$('#out');box.style.display='block';out.textContent=L('looking');
+ try{
+  const sample=window.claude&&await claude.use('sample');
+  const lim=sample&&await sample.limits();
+  if(!sample||!lim||!lim.images){out.textContent=L('na');return}
+  const blob=await shrink(f),kind=$('#hk').value,note=$('#hn').value.trim();
+  const lang=['English','Sinhala (සිංහල)','Tamil (தமிழ்)'][LI];
+  const q=`You are a friendly, practical farm advisor helping a small-scale farmer in Sri Lanka. The photo shows a sick or damaged ${kind}. Farmer’s note: ${note||'none'}.
+Reply entirely in ${lang}, in very simple words and short sentences, with these four parts:
+1. What it most likely is (and one or two other possibilities)
+2. How serious it is
+3. What to do today: cheap, safe steps first, using treatments available in Sri Lanka; name common treatments or medicines and say to follow the label
+4. When to call a vet (Veterinary Surgeon) or the local agriculture instructor (Krushi Upadeshaka)
+If the photo is unclear, say what extra photo would help. Never claim to be certain.`;
+  const r=await sample(q,{images:[blob],cache:false,onText:({text})=>{out.innerHTML=fmtT(text)}});
+  health.last=r.text;out.innerHTML=fmtT(r.text);
+ }catch(e){
+  const c=e&&e.code;
+  out.textContent=c==='not_granted'?L('denied'):c==='rate_limited'?L('rate'):L('err')}}
+function saveAdvice(){
+ const i=find($('#hi').value);
+ if(!i){alert(L('needItem'));return}
+ i.log.push({d:Date.now(),t:'health',note:(health.last||'').replace(/\*\*/g,'').slice(0,500),cost:0});save();
+ alert(L('saved'))}
+setInterval(()=>document.querySelectorAll('[data-t]').forEach(e=>{
+ e.textContent=cd(e.dataset.t);e.classList.toggle('due',new Date(e.dataset.t)<=Date.now())}),1000);
+document.documentElement.lang=['en','si','ta'][LI];
+render();
+</script></body></html>
