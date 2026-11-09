@@ -60,7 +60,8 @@ let view='home',sel=null,adding=false,health={};
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uid=()=>Math.random().toString(36).slice(2,9);
-const today=()=>new Date().toISOString().slice(0,10);
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const parseFarmDate=v=>{if(!v)return new Date(NaN);const m=String(v).match(/^(\d{4})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2}))?/);return m?new Date(+m[1],+m[2]-1,+m[3],m[4]?+m[4]:8,m[5]?+m[5]:0,0):new Date(v)};
 // [English, Sinhala, Tamil]
 const D={
 tag:['Rooted in Nature. Powered by Innovation.','Rooted in Nature. Powered by Innovation.','Rooted in Nature. Powered by Innovation.'],
@@ -154,16 +155,16 @@ const find=id=>S.items.find(x=>x.id===id);
 const num=n=>(Math.round(n*100)/100).toLocaleString('en-LK');
 const rs=n=>'Rs '+num(n);
 const costOf=i=>i.log.reduce((a,l)=>a+(+l.cost||0),0);
-const fmtD=d=>new Date(typeof d==='number'?d:(String(d).length===10?String(d)+'T00:00:00':d)).toLocaleDateString(LOC(),{day:'numeric',month:'short',year:'numeric'});
+const fmtD=d=>(typeof d==='number'?new Date(d):parseFarmDate(d)).toLocaleDateString(LOC(),{day:'numeric',month:'short',year:'numeric'});
 const prog=i=>Math.round(i.stage/(ST[i.type][0].length-1)*100);
 const stg=(i,k)=>ST[i.type][LI][k];
 const seasonS=i=>i.season?' · '+L(i.season).split(' (')[0]:'';
 const logHead=l=>D['a_'+l.t]?L('a_'+l.t):l.t;
 const logNote=(l,i)=>l.t==='step'&&ST[i.type][0][l.note]!=null?stg(i,l.note):l.t==='timer'&&(l.note==='on'||l.note==='off')?L(l.note==='on'?'tOn':'tOff'):l.note;
-function cd(iso){const ms=new Date(iso)-Date.now();if(ms<=0)return L('ready');
+function cd(iso){const ms=parseFarmDate(iso)-Date.now();if(ms<=0)return L('ready');
  const u=L('u').split(' '),d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4),s=Math.floor(ms%6e4/1e3);
  return (d?d+u[0]+' ':'')+h+u[1]+' '+m+u[2]+(d?'':' '+s+u[3])}
-const cdEl=iso=>`<div class="cd ${new Date(iso)<=Date.now()?'due':''}" data-t="${iso}">${cd(iso)}</div>`;
+const cdEl=iso=>`<div class="cd ${parseFarmDate(iso)<=Date.now()?'due':''}" data-t="${esc(iso)}">${cd(iso)}</div>`;
 
 function vHome(){
  const act=S.items.filter(i=>!i.sold);
@@ -215,7 +216,7 @@ function detail(i){
  ${(i.events||[]).slice().sort((a,b)=>a.date.localeCompare(b.date)).map(e=>`<div class="log"><div class="between"><b>${esc(e.title||L('activityTypes')[LI][e.type])}</b><span class="mut">${fmtD(e.date)}</span></div>${e.note?'<div>'+esc(e.note)+'</div>':''}<div class="row" style="margin-top:6px"><button class="chip alt" onclick="editFarmEvent('${id}','${e.id}')">${L('edit')}</button><button class="chip red" onclick="deleteFarmEvent('${id}','${e.id}')">${L('deleteEvent')}</button></div></div>`).join('')||`<p class="mut">${L('noEvents')}</p>`}
  <h3>${L('addEvent')}</h3>
  <label>${L('eventType')}</label><select id="evtype">${L('activityTypes').map((t,k)=>`<option value="${k}">${t}</option>`).join('')}</select>
- <label>${L('eventDate')}</label><input id="evdate" type="date" value="${today()}">
+ <label>${L('eventDate')}</label><input id="evdate" type="datetime-local" value="${today()}T08:00">
  <label>${L('eventNote')}</label><input id="evnote" placeholder="${L('eventNote')}">
  <button class="full" onclick="addFarmEvent('${id}')">${L('saveEvent')}</button></div>
  <div class="card"><h2 style="margin-top:0">${L('diaryT')}</h2>
@@ -244,8 +245,8 @@ function vHealth(){return `<h1>${L('hTitle')}</h1><p class="mut">${L('hIntro')}<
  <p class="mut">${L('disc')}</p>`}
 
 function vHarvest(){
- const events=S.items.filter(i=>!i.sold).flatMap(i=>(i.events||[]).map(e=>({...e,item:i}))).sort((a,b)=>a.date.localeCompare(b.date));
- const w=S.items.filter(i=>i.harvest&&!i.sold).sort((a,b)=>new Date(a.harvest)-new Date(b.harvest));
+ const events=S.items.filter(i=>!i.sold).flatMap(i=>(i.events||[]).map(e=>({...e,item:i}))).sort((a,b)=>parseFarmDate(a.date)-parseFarmDate(b.date));
+ const w=S.items.filter(i=>i.harvest&&!i.sold).sort((a,b)=>parseFarmDate(a.harvest)-parseFarmDate(b.harvest));
  const no=S.items.filter(i=>!i.harvest&&!i.sold);
  return `<h1>${L('hvT')}</h1>
  <div class="card"><h2 style="margin-top:0">${L('scheduled')}</h2>
@@ -401,7 +402,7 @@ function saveAdvice(){
  i.log.push({d:Date.now(),t:'health',note:(health.last||'').replace(/\*\*/g,'').slice(0,500),cost:0});save();
  alert(L('saved'))}
 setInterval(()=>document.querySelectorAll('[data-t]').forEach(e=>{
- e.textContent=cd(e.dataset.t);e.classList.toggle('due',new Date(e.dataset.t)<=Date.now())}),1000);
+ e.textContent=cd(e.dataset.t);e.classList.toggle('due',parseFarmDate(e.dataset.t)<=Date.now())}),1000);
 document.documentElement.lang=['en','si','ta'][LI];
 render();
 </script></body></html>
