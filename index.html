@@ -250,7 +250,7 @@ function vHarvest(){
  const no=S.items.filter(i=>!i.harvest&&!i.sold);
  return `<h1>${L('hvT')}</h1>
  <div class="card"><h2 style="margin-top:0">${L('scheduled')}</h2>
- ${events.map(e=>`<div class="log" onclick="openItem('${e.item.id}')"><div class="between"><b>${esc(e.title||L('activityTypes')[LI][e.type])} · ${esc(e.item.name)}</b><span class="mut">${fmtD(e.date)}</span></div>${e.note?'<div>'+esc(e.note)+'</div>':''}</div>`).join('')||`<p class="mut">${L('noEvents')}</p>`}
+ ${events.map(e=>`<div class="log" onclick="openItem('${e.item.id}')"><div class="between"><b>${esc(e.title||L('activityTypes')[LI][e.type])} · ${esc(e.item.name)}</b><span class="mut">${fmtD(e.date)}</span></div>${cdEl(e.date)}${e.note?'<div>'+esc(e.note)+'</div>':''}</div>`).join('')||`<p class="mut">${L('noEvents')}</p>`}
  </div>
  <h2>⏰ ${L('next')}</h2>
  ${w.map(i=>`<div class="card" onclick="openItem('${i.id}')"><b>${ic(i)} ${esc(i.name)}</b><div class="mut">${new Date(i.harvest).toLocaleString(LOC(),{dateStyle:'medium',timeStyle:'short'})}</div>${cdEl(i.harvest)}</div>`).join('')||`<p class="mut">${L('noT')}</p>`}
