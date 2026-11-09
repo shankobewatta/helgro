@@ -337,7 +337,7 @@ function addFarmEvent(id){
 function editFarmEvent(id,eventId){
  const i=find(id),e=(i.events||[]).find(x=>x.id===eventId);if(!e)return;
  const date=prompt(L('eventDate'),e.date);if(date===null)return;
- if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(date)){alert(L('eventDate'));return}
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(date)){alert(L('eventDate'));return}
  const note=prompt(L('eventNote'),e.note||'');if(note===null)return;
  e.date=date;e.note=note;save();render()
 }
