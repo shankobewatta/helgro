@@ -112,7 +112,11 @@ err:['Sorry, I couldn’t read that photo. Please try again.','සමාවන�
 needPhoto:['Please choose a photo first.','කරුණාකර මුලින් ඡායාරූපයක් තෝරන්න.','முதலில் ஒரு படத்தைத் தேர்ந்தெடுக்கவும்.'],
 needItem:['Please choose which crop or animal this is for.','මෙය කුමන බෝගයටද සතාටද යන්න තෝරන්න.','இது எந்தப் பயிர் அல்லது விலங்குக்கு என்பதைத் தேர்ந்தெடுக்கவும்.'],
 saved:['Saved to the diary.','දිනපොතට සුරකිණි.','நாட்குறிப்பில் சேமிக்கப்பட்டது.'],
-hvT:['Harvest timers ⏰','අස්වනු ටයිමර ⏰','அறுவடை நேரங்கள் ⏰'],noT:['No timers yet.','තවම ටයිමර් නැත.','இன்னும் நேரங்கள் இல்லை.'],
+eventTitle:['Farming calendar & reminders','වගා දින දර්ශනය සහ මතක් කිරීම්','விவசாய நாட்காட்டி மற்றும் நினைவூட்டல்கள்'],
+eventType:['Activity','කාර්යය','செயல்'],eventDate:['Date (day / month / year)','දිනය (දින / මාස / වර්ෂය)','தேதி (நாள் / மாதம் / ஆண்டு)'],eventNote:['Details (optional)','විස්තර (අත්‍යවශ්‍ය නොවේ)','விவரங்கள் (விருப்பம்)'],addEvent:['＋ Add farming date','＋ වගා දිනයක් එක් කරන්න','＋ விவசாய தேதியைச் சேர்'],scheduled:['Scheduled activities','සැලසුම් කළ කාර්යයන්','திட்டமிட்ட செயல்கள்'],noEvents:['No farming dates yet. Add planting, fertilizer, watering or other dates.','තවම වගා දින නැත. සිටුවීම, පොහොර, ජලය දැමීම හෝ වෙනත් දින එක් කරන්න.','இன்னும் விவசாய தேதிகள் இல்லை. நடவு, உரம், நீர்ப்பாசனம் அல்லது பிற தேதிகளைச் சேர்க்கவும்.'],
+activityTypes:[['Planting / farming start','Fertilizer application','Watering / irrigation','Pest or disease treatment','Weeding / pruning','Expected harvest','Custom activity'],['සිටුවීම / වගා ආරම්භය','පොහොර යෙදීම','ජලය දැමීම','පළිබෝධ / රෝග පාලනය','වල් නෙලීම / කප්පාදු කිරීම','අපේක්ෂිත අස්වැන්න','වෙනත් කාර්යයක්'],['நடவு / விவசாயத் தொடக்கம்','உரமிடுதல்','நீர்ப்பாசனம்','பூச்சி / நோய் சிகிச்சை','களை எடுத்தல் / கவாத்து','எதிர்பார்க்கும் அறுவடை','தனிப்பயன் செயல்']],
+edit:['Edit','සංස්කරණය','திருத்து'],deleteEvent:['Delete','මකන්න','நீக்கு'],saveEvent:['Save date','දිනය සුරකින්න','தேதியைச் சேமி'],cancel:['Cancel','අවලංගු','ரத்து'],
+hvT:['Farming calendar & harvest','වගා දින දර්ශනය සහ අස්වැන්න','விவசாய நாட்காட்டி மற்றும் அறுவடை'],noT:['No timers yet.','තවම ටයිමර් නැත.','இன்னும் நேரங்கள் இல்லை.'],
 noTy:['No timer yet','තවම ටයිමරයක් නැත','இன்னும் நேரம் இல்லை'],tapSet:['tap to set a timer','ටයිමරයක් සැකසීමට ස්පර්ශ කරන්න','நேரம் அமைக்கத் தொடவும்'],
 ready:['Ready now! 🎉','දැන් සූදානම්! 🎉','இப்போது தயார்! 🎉'],u:['d h m s','දින පැය මි. ත.','நாள் மணி நிமி வி'],
 salesT:['Sales 💰','විකුණුම් 💰','விற்பனை 💰'],
@@ -150,7 +154,7 @@ const find=id=>S.items.find(x=>x.id===id);
 const num=n=>(Math.round(n*100)/100).toLocaleString('en-LK');
 const rs=n=>'Rs '+num(n);
 const costOf=i=>i.log.reduce((a,l)=>a+(+l.cost||0),0);
-const fmtD=d=>new Date(d).toLocaleDateString(LOC(),{day:'numeric',month:'short'});
+const fmtD=d=>new Date(typeof d==='number'?d:(String(d).length===10?String(d)+'T00:00:00':d)).toLocaleDateString(LOC(),{day:'numeric',month:'short',year:'numeric'});
 const prog=i=>Math.round(i.stage/(ST[i.type][0].length-1)*100);
 const stg=(i,k)=>ST[i.type][LI][k];
 const seasonS=i=>i.season?' · '+L(i.season).split(' (')[0]:'';
@@ -206,6 +210,14 @@ function detail(i){
  ${i.harvest?cdEl(i.harvest):`<p class="mut">${L('noTimerSet')}</p>`}
  <label>${L('htl')}</label><input id="hv" type="datetime-local" value="${esc(i.harvest)}">
  <button class="full" onclick="setHarvest('${id}')">${L('saveTimer')}</button></div>
+ <div class="card"><h2 style="margin-top:0">📅 ${L('eventTitle')}</h2>
+ <h3>${L('scheduled')}</h3>
+ ${(i.events||[]).slice().sort((a,b)=>a.date.localeCompare(b.date)).map(e=>`<div class="log"><div class="between"><b>${esc(e.title||L('activityTypes')[LI][e.type])}</b><span class="mut">${fmtD(e.date)}</span></div>${e.note?'<div>'+esc(e.note)+'</div>':''}<div class="row" style="margin-top:6px"><button class="chip alt" onclick="editFarmEvent('${id}','${e.id}')">${L('edit')}</button><button class="chip red" onclick="deleteFarmEvent('${id}','${e.id}')">${L('deleteEvent')}</button></div></div>`).join('')||`<p class="mut">${L('noEvents')}</p>`}
+ <h3>${L('addEvent')}</h3>
+ <label>${L('eventType')}</label><select id="evtype">${L('activityTypes').map((t,k)=>`<option value="${k}">${t}</option>`).join('')}</select>
+ <label>${L('eventDate')}</label><input id="evdate" type="date" value="${today()}">
+ <label>${L('eventNote')}</label><input id="evnote" placeholder="${L('eventNote')}">
+ <button class="full" onclick="addFarmEvent('${id}')">${L('saveEvent')}</button></div>
  <div class="card"><h2 style="margin-top:0">${L('diaryT')}</h2>
  <label>${L('whatDid')}</label><select id="at">${ACTK.map(a=>`<option value="${a}">${L('a_'+a)}</option>`).join('')}</select>
  <label>${L('note')} (${L('opt')})</label><input id="an">
@@ -232,11 +244,17 @@ function vHealth(){return `<h1>${L('hTitle')}</h1><p class="mut">${L('hIntro')}<
  <p class="mut">${L('disc')}</p>`}
 
 function vHarvest(){
+ const events=S.items.filter(i=>!i.sold).flatMap(i=>(i.events||[]).map(e=>({...e,item:i}))).sort((a,b)=>a.date.localeCompare(b.date));
  const w=S.items.filter(i=>i.harvest&&!i.sold).sort((a,b)=>new Date(a.harvest)-new Date(b.harvest));
  const no=S.items.filter(i=>!i.harvest&&!i.sold);
  return `<h1>${L('hvT')}</h1>
+ <div class="card"><h2 style="margin-top:0">${L('scheduled')}</h2>
+ ${events.map(e=>`<div class="log" onclick="openItem('${e.item.id}')"><div class="between"><b>${esc(e.title||L('activityTypes')[LI][e.type])} · ${esc(e.item.name)}</b><span class="mut">${fmtD(e.date)}</span></div>${e.note?'<div>'+esc(e.note)+'</div>':''}</div>`).join('')||`<p class="mut">${L('noEvents')}</p>`}
+ </div>
+ <h2>⏰ ${L('next')}</h2>
  ${w.map(i=>`<div class="card" onclick="openItem('${i.id}')"><b>${ic(i)} ${esc(i.name)}</b><div class="mut">${new Date(i.harvest).toLocaleString(LOC(),{dateStyle:'medium',timeStyle:'short'})}</div>${cdEl(i.harvest)}</div>`).join('')||`<p class="mut">${L('noT')}</p>`}
- ${no.length?`<h2>${L('noTy')}</h2>`+no.map(i=>`<div class="card" onclick="openItem('${i.id}')"><b>${ic(i)} ${esc(i.name)}</b> <span class="mut">· ${L('tapSet')}</span></div>`).join(''):''}`}
+ ${no.length?`<h2>${L('noTy')}</h2>`+no.map(i=>`<div class="card" onclick="openItem('${i.id}')"><b>${ic(i)} ${esc(i.name)}</b> <span class="mut">· ${L('tapSet')}</span></div>`).join(''):''}`
+}
 
 function vSales(){
  const inc=S.sales.reduce((a,s)=>a+s.total,0),cost=S.items.reduce((a,i)=>a+costOf(i),0);
@@ -295,7 +313,9 @@ function pick(k){$('#n').value=CH[k][LI+1];$('#t').value=CH[k][0]}
 function addItem(){
  const n=$('#n').value.trim();
  if(!n){alert(L('needName'));return}
- const it={id:uid(),name:n,type:$('#t').value,season:$('#se').value,stage:0,start:$('#s').value||today(),harvest:$('#h').value,log:[],sold:false};
+ const it={id:uid(),name:n,type:$('#t').value,season:$('#se').value,stage:0,start:$('#s').value||today(),harvest:$('#h').value,events:[],log:[],sold:false};
+ it.events.push({id:uid(),type:0,title:L('activityTypes')[LI][0],date:it.start,note:''});
+ if(it.harvest)it.events.push({id:uid(),type:5,title:L('activityTypes')[LI][5],date:it.harvest.slice(0,10),note:''});
  it.log.push({d:Date.now(),t:'start',note:n,cost:0});
  S.items.push(it);save();adding=false;sel=it.id;render()}
 function setStage(id,k){
@@ -303,7 +323,28 @@ function setStage(id,k){
  i.log.push({d:Date.now(),t:'step',note:k,cost:0});save();render()}
 function setHarvest(id){
  const i=find(id);i.harvest=$('#hv').value;
+ i.events=(i.events||[]).filter(e=>e.type!==5);
+ if(i.harvest)i.events.push({id:uid(),type:5,title:L('activityTypes')[LI][5],date:i.harvest.slice(0,10),note:''});
  i.log.push({d:Date.now(),t:'timer',note:i.harvest?'on':'off',cost:0});save();render()}
+function addFarmEvent(id){
+ const i=find(id),date=$('#evdate').value;
+ if(!date){alert(L('eventDate'));return}
+ const type=+$('#evtype').value;
+ i.events=i.events||[];
+ i.events.push({id:uid(),type,title:L('activityTypes')[LI][type],date,note:$('#evnote').value.trim()});
+ save();render()
+}
+function editFarmEvent(id,eventId){
+ const i=find(id),e=(i.events||[]).find(x=>x.id===eventId);if(!e)return;
+ const date=prompt(L('eventDate'),e.date);if(date===null)return;
+ if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(date)){alert(L('eventDate'));return}
+ const note=prompt(L('eventNote'),e.note||'');if(note===null)return;
+ e.date=date;e.note=note;save();render()
+}
+function deleteFarmEvent(id,eventId){
+ const i=find(id);if(!confirm(L('deleteEvent')+'?'))return;
+ i.events=(i.events||[]).filter(e=>e.id!==eventId);save();render()
+}
 function logWork(id){
  const i=find(id);
  i.log.push({d:Date.now(),t:$('#at').value,note:$('#an').value.trim(),cost:+$('#ac').value||0});save();render()}
