@@ -55,6 +55,20 @@ label{font-weight:600;font-size:16px;color:var(--mut)}
 .msg{padding:10px 14px;border-radius:16px;margin:8px 0;max-width:92%;white-space:pre-wrap}
 .msg.u{background:var(--g);color:var(--gt);margin-left:auto}
 .msg.a{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--gold)}
+.chat-panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px;margin:14px 0;box-shadow:0 8px 24px rgba(30,50,35,.06)}
+#chat{display:flex;flex-direction:column;gap:10px;max-height:min(52vh,560px);min-height:150px;overflow-y:auto;padding:4px 2px 12px;overscroll-behavior:contain;scroll-behavior:smooth}
+.msg{width:fit-content;max-width:min(88%,620px);overflow-wrap:anywhere;line-height:1.55}
+.msg.u{margin-left:auto;border-bottom-right-radius:5px}
+.msg.a{margin-right:auto;border-bottom-left-radius:5px}
+.msg.pending{opacity:.72}
+.chat-suggestions{display:grid;grid-template-columns:1fr;gap:8px;margin:10px 0}
+.chat-suggestions button{width:100%;text-align:left;min-height:46px}
+.chat-compose{display:flex;align-items:flex-end;gap:8px;margin-top:10px}
+.chat-compose textarea{flex:1;min-width:0;min-height:52px;max-height:150px;resize:vertical;margin:0}
+.chat-compose button{flex:0 0 auto;min-width:88px}
+.chat-status{font-size:13px;color:var(--mut);margin:8px 2px 0}
+@media(max-width:480px){.chat-panel{padding:9px}.msg{max-width:94%;font-size:15px}.chat-compose{gap:6px}.chat-compose button{min-width:72px;padding:10px 12px}#chat{max-height:55vh}}
+
 .log{border-top:1px solid var(--line);padding:8px 0;font-size:16px}
 nav{position:fixed;left:0;right:0;bottom:0;display:flex;gap:2px;background:var(--card);border-top:3px solid var(--gold);padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px))}
 nav button{flex:1;background:none;color:var(--mut);padding:4px 2px;font-size:12px;min-height:56px;border-radius:12px}
@@ -279,39 +293,102 @@ function vSales(){
  <div class="card"><span class="mut">${L('spent')}</span><b>${rs(cost)}</b></div></div>
  ${S.sales.slice().reverse().map(s=>`<div class="card"><div class="between"><b>${esc(s.name)}</b><b>${rs(s.total)}</b></div><div class="mut">${num(s.qty)} ${esc(s.unit)} × ${num(s.price)}${s.buyer?' · '+esc(s.buyer):''} · ${fmtD(s.d)}</div></div>`).join('')||`<p class="mut">${L('noS')}</p>`}`}
 
+// Set this to the HTTPS URL of the HELGRO Cloudflare Worker after deployment.
+const HELGRO_AI_ENDPOINT='';
 let chat=[],busy=false;
-const msgHtml=()=>chat.map(m=>`<div class='msg ${m.r}'>${m.r==='a'?fmtT(m.t||L('thinking')):esc(m.t)}</div>`).join('');
-function draw(){const c=$('#chat');if(!c)return;c.innerHTML=msgHtml();if(c.lastElementChild)c.lastElementChild.scrollIntoView({block:'nearest'})}
+const msgHtml=()=>chat.map(m=>`<div class="msg ${m.r}${m.pending?' pending':''}">${m.r==='a'?fmtT(m.t||L('thinking')):esc(m.t)}</div>`).join('');
+function draw(){
+ const c=$('#chat');if(!c)return;
+ c.innerHTML=msgHtml();
+ if(c.lastElementChild)c.lastElementChild.scrollIntoView({block:'nearest',behavior:'smooth'});
+ const b=$('#sendBtn');if(b){b.disabled=busy;b.textContent=busy?L('thinking'):L('send')}
+ const q=$('#q');if(q&&busy)q.disabled=true;else if(q)q.disabled=false;
+}
 function vAsk(){return `<h1>${L('askT')}</h1><p class='mut'>${L('askIntro')}</p>
- <div id='chat'>${msgHtml()}</div>
- ${chat.length?'':[1,2,3].map(n=>`<button class='chip alt' style='display:block;width:100%;text-align:left;margin:0 0 8px;border-radius:14px;padding:10px 14px;min-height:48px' onclick='askQ(${n})'>${L('q'+n)}</button>`).join('')}
- <textarea id='q' rows='2' placeholder='${L('askPh')}' onkeydown='keyAsk(event)'></textarea>
- <div class='row'><button onclick='ask()'>${L('send')}</button>${chat.length?`<button class='alt' onclick='chat=[];render(true)'>${L('newChat')}</button>`:''}</div>
+ <section class="chat-panel" aria-label="HELGRO farm assistant">
+  <div id='chat' role="log" aria-live="polite" aria-relevant="additions text">${msgHtml()}</div>
+  ${chat.length?'':`<div class="chat-suggestions">${[1,2,3].map(n=>`<button class="chip alt" onclick="askQ(${n})">${L('q'+n)}</button>`).join('')}</div>`}
+  <div class="chat-compose">
+   <textarea id='q' rows='2' maxlength="1200" placeholder='${L('askPh')}' aria-label='${L('askPh')}' onkeydown='keyAsk(event)'></textarea>
+   <button id="sendBtn" onclick='ask()'>${L('send')}</button>
+  </div>
+  <div class="chat-status" id="chatStatus" aria-live="polite">${['Ask in English, Sinhala or Tamil.','සිංහල, දෙමළ හෝ ඉංග්‍රීසි භාෂාවෙන් අහන්න.','தமிழ், சிங்களம் அல்லது ஆங்கிலத்தில் கேளுங்கள்.'][LI]}</div>
+  ${chat.length?`<button class="alt full" style="margin-top:10px" onclick="chat=[];render(true)">${L('newChat')}</button>`:''}
+ </section>
  <p class='mut'>${L('disc')}</p>`}
 function askQ(n){ask(L('q'+n))}
-function keyAsk(e){if(e.key==='Enter'&&!e.shiftKey&&!/Android|iPhone|iPad/i.test(navigator.userAgent)){e.preventDefault();ask()}}
+function keyAsk(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();ask()}}
+function localFarmReply(q){
+ const s=q.toLowerCase();
+ const topics=[
+  {keys:/fertili[sz]|\bfertilizer\b|\bfertiliser\b|පොහොර|உரம்/,a:[
+   'Fertiliser timing depends on the crop, its growth stage and the soil. Use the Department of Agriculture recommendation for your exact crop and area. Do not apply extra fertiliser or mix products without label guidance. Tell me the crop, its age and your district for more specific guidance.',
+   'පොහොර යෙදිය යුතු වේලාව බෝගය, වර්ධන අවධිය සහ පස අනුව වෙනස් වේ. ඔබේ ප්‍රදේශයට අදාළ කෘෂිකර්ම දෙපාර්තමේන්තු නිර්දේශ අනුගමනය කරන්න. ලේබලයේ ප්‍රමාණය ඉක්මවා නොයොදන්න. බෝගය, වයස සහ දිස්ත්‍රික්කය කියන්න.',
+   'உரமிடும் நேரம் பயிர், வளர்ச்சி நிலை மற்றும் மண்ணைப் பொறுத்தது. உங்கள் பகுதிக்கான விவசாயத் திணைக்களப் பரிந்துரையைப் பின்பற்றுங்கள். லேபிளில் கூறிய அளவை மீற வேண்டாம். பயிர், வயது, மாவட்டத்தைச் சொல்லுங்கள்.']},
+  {keys:/water|irrigat|ජලය|වතුර|நீர்|பாசன/,a:[
+   'Water according to soil moisture, crop stage and weather. Check the soil near the roots before watering; avoid waterlogging. Water early in the morning where practical. What crop are you growing and is it in a field, pot or greenhouse?',
+   'පසෙහි තෙතමනය, බෝගයේ අවධිය සහ කාලගුණය අනුව ජලය දෙන්න. වතුර දැමීමට පෙර මුල් අසල පස පරීක්ෂා කරන්න. ජලය රැඳීම වළක්වන්න. ඔබ වගා කරන්නේ කුමන බෝගයද?',
+   'மண்ணின் ஈரப்பதம், பயிரின் நிலை, வானிலை ஆகியவற்றைப் பார்த்து நீர் பாய்ச்சுங்கள். வேரருகே மண்ணைச் சோதியுங்கள்; நீர் தேங்குவதைத் தவிர்க்கவும். எந்தப் பயிரை வளர்க்கிறீர்கள்?']},
+  {keys:/yellow|spot|leaf|wilting|කහ|කොළ|පැල්ලම්|இலை|மஞ்சள்|புள்ளி/,a:[
+   'Yellow leaves or spots can come from nutrient problems, excess water, pests or disease. Check both sides of several leaves and look for insects or spreading spots. Avoid spraying until the cause is clearer. Share a clear photo and the crop name; for fast-spreading damage contact your local agriculture instructor.',
+   'කහ පැහැති කොළ හෝ පැල්ලම් පෝෂක හිඟය, අධික ජලය, පළිබෝධ හෝ රෝග නිසා විය හැක. කොළ දෙපසම පරීක්ෂා කරන්න. හේතුව පැහැදිලි වනතුරු රසායනික ද්‍රව්‍ය ඉසින්න එපා. බෝගයේ නම සහ පැහැදිලි ඡායාරූපයක් එවන්න.',
+   'மஞ்சள் இலைகள் அல்லது புள்ளிகள் ஊட்டச்சத்து குறைவு, அதிக நீர், பூச்சி அல்லது நோயால் ஏற்படலாம். இலைகளின் இருபுறமும் பாருங்கள். காரணம் தெளிவாகும் வரை மருந்து தெளிக்க வேண்டாம். பயிரின் பெயரையும் தெளிவான படத்தையும் பகிருங்கள்.']},
+  {keys:/cow|cattle|goat|chicken|animal|ගව|එළුව|කුකු|සතා|மாடு|ஆடு|கோழி|விலங்கு/,a:[
+   'If an animal is not eating, provide clean water, keep it calm and observe its behaviour, droppings and breathing. Do not give human medicine. If it is weak, bloated, has trouble breathing, cannot stand or refuses food for several hours, contact a Veterinary Surgeon promptly. Which animal, how old, and what other signs do you see?',
+   'සතා ආහාර නොගන්නේ නම් පිරිසිදු ජලය ලබාදී සන්සුන්ව තබා හැසිරීම, මළපහ සහ හුස්ම ගැනීම නිරීක්ෂණය කරන්න. මිනිසුන්ට දෙන බෙහෙත් දෙන්න එපා. දුර්වල නම්, බඩ පිම්බේ නම් හෝ හුස්ම ගැනීමට අපහසු නම් වහාම පශු වෛද්‍යවරයෙකු අමතන්න. කුමන සතාද?',
+   'விலங்கு உணவு உண்ணாவிட்டால் சுத்தமான நீர் கொடுத்து அமைதியாக வைத்துக் கவனியுங்கள். மனிதர்களுக்கான மருந்தைக் கொடுக்க வேண்டாம். பலவீனம், வயிறு வீக்கம், மூச்சுத் திணறல் அல்லது நிற்க முடியாமை இருந்தால் உடனே கால்நடை மருத்துவரை அணுகுங்கள். எந்த விலங்கு?']},
+  {keys:/pest|insect|worm|bug|කෘමි|පණු|පළිබෝධ|பூச்சி|புழு/,a:[
+   'First identify the pest: inspect the underside of leaves, stems and nearby plants. Remove badly affected plant parts if safe, keep the field clean and avoid spraying an unidentified chemical. Use only a product labelled for that crop and pest, following its label. What crop and what insect or damage do you see?',
+   'පළමුව පළිබෝධය හඳුනාගන්න: කොළ යට, කඳ සහ අවට පැළ පරීක්ෂා කරන්න. හඳුනා නොගත් රසායනික ද්‍රව්‍ය ඉසින්න එපා. එම බෝගයට සහ පළිබෝධයට අනුමත ලේබලයක් ඇති නිෂ්පාදනයක් පමණක් උපදෙස් අනුව භාවිත කරන්න.',
+   'முதலில் பூச்சியை அடையாளம் காணுங்கள். இலைகளின் அடிப்புறம், தண்டு, அருகிலுள்ள செடிகளைப் பாருங்கள். தெரியாத மருந்தைத் தெளிக்க வேண்டாம். அந்தப் பயிருக்கும் பூச்சிக்கும் குறிக்கப்பட்ட தயாரிப்பை லேபிளின்படி மட்டுமே பயன்படுத்துங்கள்.']},
+  {keys:/harvest|store|fresh|අස්වනු|ගබඩා|නැවුම්|அறுவடை|சேமி|புதிய/,a:[
+   'Harvest during the cooler part of the day when possible. Handle produce gently, keep it shaded, remove damaged pieces and use clean, ventilated containers. Different crops need different storage temperatures, so tell me the crop and how long you need to store it.',
+   'හැකි නම් සිසිල් වේලාවක අස්වනු නෙළන්න. අස්වැන්න පරිස්සමින් හසුරුවා සෙවණේ තබන්න. හානි වූ කොටස් ඉවත් කර පිරිසිදු, වාතාශ්‍රය ඇති බඳුන් භාවිත කරන්න. කුමන බෝගයද සහ කොපමණ කාලයක් තබාගත යුතුද?',
+   'முடிந்தால் குளிரான நேரத்தில் அறுவடை செய்யுங்கள். விளைபொருளை மெதுவாகக் கையாள்ந்து நிழலில் வையுங்கள். சேதமடைந்தவற்றை நீக்கி சுத்தமான காற்றோட்டமுள்ள பெட்டிகளைப் பயன்படுத்துங்கள். எந்தப் பயிர், எத்தனை நாள் சேமிக்க வேண்டும்?']}
+ ];
+ const t=topics.find(x=>x.keys.test(s));
+ if(t)return t.a[LI];
+ return [
+  'I can help with crop care, Maha/Yala planning, watering, fertiliser, pests, harvest handling and livestock basics. Tell me the crop or animal, its age or growth stage, your district, and what problem you are seeing. For a diagnosis from a picture, open the Health tab.',
+  'බෝග රැකවරණය, මහ/යල කන්න සැලසුම්, ජලය, පොහොර, පළිබෝධ, අස්වනු සහ සත්ව රැකවරණය ගැන මට උදව් කළ හැක. බෝගය හෝ සතා, වයස, දිස්ත්‍රික්කය සහ ගැටලුව කියන්න. ඡායාරූප පරීක්ෂාවට සෞඛ්‍ය පිටුව භාවිත කරන්න.',
+  'பயிர் பராமரிப்பு, பெரும்போக/சிறுபோகத் திட்டம், நீர், உரம், பூச்சி, அறுவடை, கால்நடை பராமரிப்பு பற்றி உதவ முடியும். பயிர் அல்லது விலங்கு, வயது, மாவட்டம், பிரச்சினையைச் சொல்லுங்கள். பட ஆய்வுக்கு ஆரோக்கியப் பக்கத்தைப் பயன்படுத்துங்கள்.'
+ ][LI];
+}
 async function ask(text){
  if(busy)return;
  const inp=$('#q'),q=String(text||(inp?inp.value:'')).trim();
  if(!q)return;
- busy=true;chat.push({r:'u',t:q},{r:'a',t:''});render(true);draw();
+ if(q.length>1200){alert('Please keep your question under 1,200 characters.');return}
+ busy=true;chat.push({r:'u',t:q},{r:'a',t:L('thinking'),pending:true});render(true);draw();
  const m=chat[chat.length-1];
  try{
-  const sample=window.claude&&await claude.use('sample');
-  if(!sample){m.t=L('na');return}
-  const lang=['English','Sinhala (සිංහල)','Tamil (தமிழ்)'][LI];
-  const ctx=S.items.filter(i=>!i.sold).map(i=>'- '+i.name+' ('+i.type+(i.season?', '+i.season+' season':'')+'), step: '+ST[i.type][0][i.stage]+(i.harvest?', harvest/market time: '+i.harvest:'')+'; recent diary: '+(i.log.slice(-3).map(l=>logHead(l)+(l.note?' - '+String(logNote(l,i)).slice(0,80):'')).join('; ')||'none')).join('\n')||'(no crops or animals added yet)';
-  const hist=chat.slice(-8,-2).map(x=>(x.r==='u'?'Farmer: ':'Assistant: ')+x.t).join('\n');
-  const p=`You are HELGRO’s friendly farm assistant for small-scale farmers in Sri Lanka. Reply entirely in ${lang}, in very simple words and short sentences (about 150 words at most). Give practical, low-cost advice for Sri Lankan conditions (Maha and Yala seasons, local crops, locally available inputs). For animal illness, pests or chemicals, say to follow the label and to ask a Veterinary Surgeon or the local agriculture instructor (Krushi Upadeshaka) if it is serious. If you are not sure, say so. Do not invent prices or government schemes.
-The farmer’s farm right now:
-${ctx}
-Conversation so far:
-${hist||'(none)'}
-Farmer: ${q}
-Assistant:`;
-  const r=await sample(p,{cache:false,onText:({text})=>{m.t=text;draw()}});
-  m.t=r.text;
- }catch(e){const c=e&&e.code;m.t=c==='not_granted'?L('denied'):c==='rate_limited'?L('rate'):L('askErr')}
+  const lang=['English','Sinhala','Tamil'][LI];
+  const farmContext=S.items.filter(i=>!i.sold).map(i=>({
+   name:i.name,type:i.type,season:i.season||'',stage:ST[i.type][LI][i.stage]||'',
+   start:i.start||'',harvest:i.harvest||'',
+   recentDiary:(i.log||[]).slice(-3).map(l=>logHead(l)+' '+String(logNote(l,i)||'').slice(0,100))
+  }));
+  if(HELGRO_AI_ENDPOINT){
+   const response=await fetch(HELGRO_AI_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+    message:q,language:lang,farmContext,
+    history:chat.slice(-10,-2).map(x=>({role:x.r==='u'?'user':'assistant',content:x.t}))
+   })});
+   if(!response.ok)throw new Error('AI service returned '+response.status);
+   const data=await response.json();
+   if(!data.reply)throw new Error('AI service returned an empty answer');
+   m.t=String(data.reply);
+  }else{
+   m.t=localFarmReply(q)+'\n\n'+[
+    'This is HELGRO’s basic offline guidance. Connect the secure AI service to enable open-ended AI answers.',
+    'මෙය HELGRO හි මූලික නොබැඳි උපදෙසකි. සියලුම ප්‍රශ්න සඳහා AI පිළිතුරු ලබාගැනීමට ආරක්ෂිත AI සේවාව සම්බන්ධ කරන්න.',
+    'இது HELGRO-வின் அடிப்படை இணையமற்ற வழிகாட்டல். விரிவான AI பதில்களுக்கு பாதுகாப்பான AI சேவையை இணைக்கவும்.'
+   ][LI];
+  }
+  m.pending=false;
+ }catch(e){
+  m.pending=false;
+  m.t=localFarmReply(q)+'\n\n'+L('askErr');
+ }
  finally{busy=false;draw()}
 }
 const VIEWS={home:vHome,farm:vFarm,health:vHealth,ask:vAsk,harvest:vHarvest,sales:vSales};
